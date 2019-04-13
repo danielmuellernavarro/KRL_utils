@@ -1,0 +1,20 @@
+&ACCESS RV
+&PARAM TEMPLATE = C:\KRC\Roboter\Template\ExpertVorgabe
+&PARAM EDITMASK = *
+DEFFCT REAL sps_cycle_time( )
+INT iTimernr
+REAL rRet
+
+iTimerNr = 20
+; $TIMER[20], $TIMER_STOP[20]
+
+$TIMER_STOP[iTimerNr] = FALSE
+IF ($TIMER[iTimerNr] > 1000) OR ($TIMER[iTimerNr] < 0) THEN
+   $TIMER[iTimerNr] = 0.0
+ENDIF
+
+rRet = $TIMER[iTimerNr]
+$TIMER[iTimerNr] = 0.0
+RETURN rRet/1000 ; cycle time in seconds
+
+END
