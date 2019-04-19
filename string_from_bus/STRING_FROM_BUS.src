@@ -1,0 +1,50 @@
+&ACCESS RV
+&PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
+&PARAM EDITMASK = *
+DEFFCT INT STRING_FROM_BUS(iStartAddress :IN, iBytesLenght :IN)
+INT iStartAddress, iBytesLenght
+
+BOOL RET
+INT i, j, iAddress, iBitAddress, iByte, iExp2[8]
+
+IF VarState("iStartAddress") <> #INITIALIZED THEN
+  gsStringFromBus = "iStartAddress was not given"
+  RETURN -1
+ENDIF
+IF VarState("iBytesLenght") <> #INITIALIZED THEN
+  gsStringFromBus = "iBytesLenght was not given"
+  RETURN -1
+ENDIF
+
+RET = StrClear(gsStringFromBus[])
+
+; iExp2: 1, 2, 4, 8, 16, 32, 64, 128
+iExp2[1] = 1
+FOR i=2 TO 8
+  iExp2[i] = iExp2[i - 1]*2
+ENDFOR
+
+FOR i=1 TO iBytesLenght
+  IF iBytesLenght > STRDECLLEN(gsStringFromBus[]) THEN
+    gsStringFromBus[] = "iBytesLenght to high for gsStringFromBus[]"
+    RETURN -1
+  ENDIF
+  iAddress = iStartAddress + (i - 1)*8
+  iByte = 0
+  FOR j=1 TO 8
+    iBitAddress = iAddress + j - 1
+    IF $IN[iBitAddress] THEN
+      iByte = iByte B_OR iExp2[j]
+    ENDIF
+  ENDFOR
+  gsStringFromBus[i] = iByte
+ENDFOR
+
+IF gsStringFromBus[1] == 0 THEN ; No string received
+  gsStringFromBus[] = "Unknown string"
+  RETURN -1
+ENDIF
+
+RETURN 0
+
+END

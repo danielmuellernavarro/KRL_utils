@@ -1,0 +1,8 @@
+&ACCESS RV
+&PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
+&PARAM EDITMASK = *
+DEFDAT STRING_FROM_BUS
+
+GLOBAL CHAR gsStringFromBus[60] = " "
+
+ENDDAT
