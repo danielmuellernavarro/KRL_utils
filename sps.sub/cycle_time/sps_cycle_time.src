@@ -1,20 +1,34 @@
 &ACCESS RV
 &PARAM TEMPLATE = C:\KRC\Roboter\Template\ExpertVorgabe
 &PARAM EDITMASK = *
-DEFFCT REAL sps_cycle_time( )
+DEFFCT REAL SPS_CYCLE_TIME(eProperty :IN)
+DECL E_PROPERTY_CYCLE_TIME eProperty
+
+IF VarState("eProperty") <> #INITIALIZED THEN
+  eProperty = #GET
+ENDIF
+
 INT iTimernr
 REAL rRet
 
-iTimerNr = 20
-; $TIMER[20], $TIMER_STOP[20]
+SWITCH eProperty
+CASE #SET
+  iTimerNr = 20
+  ; $TIMER[20], $TIMER_STOP[20]
 
-$TIMER_STOP[iTimerNr] = FALSE
-IF ($TIMER[iTimerNr] > 1000) OR ($TIMER[iTimerNr] < 0) THEN
-   $TIMER[iTimerNr] = 0.0
-ENDIF
+  $TIMER_STOP[iTimerNr] = FALSE
+  IF ($TIMER[iTimerNr] > 1000) OR ($TIMER[iTimerNr] < 0) THEN
+     $TIMER[iTimerNr] = 0.0
+  ENDIF
 
-rRet = $TIMER[iTimerNr]
-$TIMER[iTimerNr] = 0.0
-RETURN rRet/1000 ; cycle time in seconds
+  rRet = $TIMER[iTimerNr]
+  $TIMER[iTimerNr] = 0.0
+
+  rZeitZyklus = rRet/1000
+CASE #GET
+  ;
+ENDSWITCH
+
+RETURN rZeitZyklus ; cycle time in seconds
 
 END
