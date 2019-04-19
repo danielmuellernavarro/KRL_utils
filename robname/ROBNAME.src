@@ -1,0 +1,58 @@
+&ACCESS RV
+&PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
+&PARAM EDITMASK = *
+DEFFCT ST_ROBOT_TYPE ROBNAME(eProperty :IN)
+DECL E_PROPERTY_ROBNAME eProperty
+
+BOOL xRet
+INT i, j, iRet, iRobnumber
+CHAR sNumber[20],sRobname[20]
+
+IF VarState("eProperty") <> #INITIALIZED THEN
+  eProperty = #GET
+ENDIF
+
+SWITCH eProperty
+CASE #SET
+  xRet = StrCopy(sRobname[],$ROBNAME[])
+  FOR i=1 TO StrDeclLen(sNumber[])
+    sNumber[i] = " "
+  ENDFOR
+  ; Robot number
+  j = 1
+  FOR i=1 TO StrLen(sRobname[])
+    IF (sRobname[i] >= 48) AND (sRobname[i] <= 57) THEN
+      sNumber[j] = sRobname[i]
+      j = j + 1
+    ELSE
+      IF sNumber[1] <> " " THEN
+        EXIT
+      ENDIF
+    ENDIF
+  ENDFOR
+  ; String to INT
+  iRobnumber = 0
+  xRet = StrToInt(sNumber[], iRobnumber)
+  IF stRobot.iNumber <> iRobnumber THEN
+    stRobot.iNumber = iRobnumber
+    MsgQuit("Robot number changed to %1",,iRobnumber)
+  ENDIF
+  ; Robot Type
+  iRet = StrFind(1, sRobname[], "TYPE_1", #CASE_SENS)
+  IF (iRet > 0) AND (stRobot.eType <> #TYPE_1) THEN
+    stRobot.eType = #TYPE_1
+    MsgQuit("Robot type change to ...")
+  ENDIF
+  iRet = StrFind(1, sRobname[], "TYPE_2", #CASE_SENS)
+  IF (iRet > 0) AND (stRobot.eType <> #TYPE_2) THEN
+    stRobot.eType = #TYPE_2
+    MsgQuit("Robot type change to ...")
+  ENDIF
+
+CASE #GET
+  ;
+ENDSWITCH
+
+RETURN stRobot
+
+ENDFCT
