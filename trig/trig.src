@@ -1,0 +1,39 @@
+&ACCESS RVO
+&REL 74
+DEF trig ()
+  ;
+END
+;FOLD R_TRIG
+GLOBAL DEFFCT ST_R_TRIG R_TRIG(stS :IN)
+DECL ST_R_TRIG stS
+
+stS.xR_Trig = stS.xAkt AND NOT stS.xAlt
+stS.xAlt = stS.xAkt
+
+RETURN stS
+
+ENDFCT
+;ENDFOLD
+;FOLD F_TRIG
+GLOBAL DEFFCT ST_F_TRIG F_TRIG(stS :IN)
+DECL ST_F_TRIG stS
+
+stS.xF_Trig = NOT stS.xAkt AND stS.xAlt
+stS.xAlt = stS.xAkt
+
+RETURN stS
+
+ENDFCT
+;ENDFOLD
+;FOLD X_TRIG
+GLOBAL DEFFCT ST_X_TRIG F_TRIG(stS :IN)
+DECL ST_X_TRIG stS
+
+stS.xR_Trig = stS.xAkt AND NOT stS.xAlt
+stS.xF_Trig = NOT stS.xAkt AND stS.xAlt
+stS.xAlt = stS.xAkt
+
+RETURN stS
+
+ENDFCT
+;ENDFOLD
