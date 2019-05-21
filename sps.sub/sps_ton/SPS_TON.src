@@ -6,7 +6,7 @@ DECL E_PROPERTY_CYCLE_TIME eProperty
 DECL ST_TON stTon
 ; DECL ST_TON stTimeExample={rValue 2.00000,rCurrent 0.0,eUnit #SECOND}
 
-REAL rZeitZyklus
+REAL rCycleTime
 
 IF VarState("eProperty") <> #INITIALIZED THEN
   eProperty = #GET
@@ -16,14 +16,14 @@ SWITCH eAktion
 CASE #RESET
   stTon.rCurrent = 0.0
 CASE #SET
-  rZeitzyklus = SPS_CYCLE_TIME(#GET)
+  rCycleTime = SPS_CYCLE_TIME(#GET)
   SWITCH stTon.eEinheit
   CASE #SECOND
-    stTon.rCurrent = stTon.rCurrent + rZeitzyklus
+    stTon.rCurrent = stTon.rCurrent + rCycleTime
   CASE #MINUTE
-    stTon.rCurrent = stTon.rCurrent + rZeitzyklus/60
+    stTon.rCurrent = stTon.rCurrent + rCycleTime/60
   CASE #HOUR
-    stTon.rCurrent = stTon.rCurrent + rZeitzyklus/3600
+    stTon.rCurrent = stTon.rCurrent + rCycleTime/3600
   ENDSWITCH
 CASE #GET
   ;

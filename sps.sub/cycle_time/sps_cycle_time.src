@@ -24,11 +24,11 @@ CASE #SET
   rRet = $TIMER[iTimerNr]
   $TIMER[iTimerNr] = 0.0
 
-  rZeitZyklus = rRet/1000
+  rCycleTime = rRet/1000
 CASE #GET
   ;
 ENDSWITCH
 
-RETURN rZeitZyklus ; cycle time in seconds
+RETURN rCycleTime ; cycle time in seconds
 
 END
