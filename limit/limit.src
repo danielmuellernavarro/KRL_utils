@@ -1,0 +1,30 @@
+&ACCESS RV
+&PARAM TEMPLATE = C:\KRC\Roboter\Template\FunctionVorgabe
+&PARAM EDITMASK = *
+GLOBAL DEFFCT REAL limit(rMin :IN, rVal :IN, rMax :IN)
+DECL REAL rMin, rVal, rMax
+
+RETURN MIN(MAX(rMin, rVal), rMax)
+
+ENDFCT
+
+GLOBAL DEFFCT REAL MAX(r1 :IN, r2 :IN)
+REAL r1, r2
+
+IF r1 > r2 THEN
+  RETURN r1
+ENDIF
+RETURN r2
+
+ENDFCT
+
+GLOBAL DEFFCT REAL MIN(r1 :IN, r2 :IN)
+REAL r1, r2
+
+IF r1 < r2 THEN
+  RETURN r1
+ENDIF
+RETURN r2
+
+ENDFCT
+
