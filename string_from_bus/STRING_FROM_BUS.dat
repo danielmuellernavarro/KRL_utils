@@ -1,7 +1,7 @@
 &ACCESS RV
 &PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
 &PARAM EDITMASK = *
-DEFDAT STRING_FROM_BUS
+DEFDAT string_from_bus
 
 GLOBAL CHAR gsStringFromBus[60] = " "
 

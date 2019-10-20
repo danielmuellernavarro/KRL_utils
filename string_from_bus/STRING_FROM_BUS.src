@@ -1,7 +1,7 @@
 &ACCESS RV
 &PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
 &PARAM EDITMASK = *
-DEFFCT INT STRING_FROM_BUS(iStartAddress :IN, iBytesLenght :IN)
+DEFFCT INT string_from_bus(iStartAddress :IN, iBytesLenght :IN)
 INT iStartAddress, iBytesLenght
 
 BOOL RET

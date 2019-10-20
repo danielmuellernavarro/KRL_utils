@@ -1,7 +1,7 @@
 &ACCESS RV
 &PARAM TEMPLATE = C:\KRC\Roboter\Template\FunctionVorgabe
 &PARAM EDITMASK = *
-DEFFCT INT MODULO(n :IN, m :IN)
+DEFFCT INT modulo(n :IN, m :IN)
 DECL INT n, m
 
   IF (n == 0) OR (m == 0) THEN
