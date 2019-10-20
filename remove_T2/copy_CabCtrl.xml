@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CabCtrl xsi:noNamespaceSchemaLocation="/Roboter/Config/System/Common/Schemes/CabCtrlSystem.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+   <!-- Parameter fuer die zyklischen Threads (Tasks) der Cabinet-Steuerung =================== -->
+   <!-- prio: Task-Prioritaet der fastPeriod. Die slowPeriod liegt automatisch eine Stufe       -->
+   <!--       darunter. Bei prio=lowest haben fastPeriod und slowPeriod die gleich Stufe.       -->
+   <!--       Werte: lowest, low, medlow, medium, medhigh, high, highest                        -->
+   <!-- fastPeriod: Zykluszeit der fastPeriod in ms.                                            -->
+   <!-- slowPeriodFactor: Zykluszeit der slowPeriod = fastPeriod * slowPeriodFactor             -->
+   <Thread prio="medlow" fastPeriod="12" slowPeriodFactor="10"/>
+   
+   <!-- Parameter fuer den Thread (Tasks) des SOAP Service der Cabinet-Steuerung ============== -->
+   <!-- prio: Task-Prioritaet                                                                   -->
+   <!--       Werte: lowest, low, medlow, medium, medhigh, high, highest                        -->
+   <!-- port: Port-Nummer fuer den Zugriff auf den SOAP Service.                                -->
+   <SoapService prio="lowest" port="54500"/>
+   
+   <!-- Leistungsaufnahme aller moeglichen Schranktypen in den verschiedenen Zustaenden ======= -->
+   <!-- type: Typ des Steuerschranks (entsprechend ENUM-Werte ECabinetTypes aus globalSysInfo.h -->
+   <!-- running: Leistungsaufnahme in Watt im Zustand Running.                                  -->
+   <!-- busPowerOff: Leistungsaufnahme in Watt im Zustand BusPowerOff.                          -->
+   <!-- softPowerOff: Leistungsaufnahme in Watt im Zustand SoftPowerOff.                        -->
+   <CabinetInformation>
+      <!-- KRC4_STANDARD -->
+      <Cabinet type="1" running="285" busPowerOff="240" softPowerOff="40"/>
+      <!-- KRC4_COMPACT_SR -->
+      <Cabinet type="2" running="120" busPowerOff="95" softPowerOff="20"/>
+      <!-- KRC4_COMPACT_LBR -->
+      <Cabinet type="3" running="130" busPowerOff="105" softPowerOff="25"/>
+      <!-- KRC4_MIDSIZE -->
+      <Cabinet type="4" running="285" busPowerOff="240" softPowerOff="40"/>
+      <!-- KRC4_EXTENDED -->
+      <Cabinet type="5" running="317" busPowerOff="272" softPowerOff="40"/>
+      <!-- KRC4_SMALLSIZE -->
+      <Cabinet type="6" running="120" busPowerOff="95" softPowerOff="20"/>
+      <!-- KRC4_SMALLSIZE_400 -->
+      <Cabinet type="7" running="120" busPowerOff="95" softPowerOff="20"/>
+   </CabinetInformation>
+   
+   <!-- Definitionen der Operations =========================================================== -->
+   <Operations>
+   <!-- Parameter der Operations ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+   <!-- type: Zyklus der Operation. Werte: fastPeriod, slowPeriod                               -->
+   <!-- activated: Schalter, um die Operations ein bzw. auszuschalten. Werte: on, off           -->
+   
+   <!-- Parameter fuer Input und Output +++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+   <!-- driver: Name des Treibermoduls.                                                         -->
+   <!-- bus: Name der Businstanz, wie sie im Treiber konfiguriert ist.                          -->
+   <!-- bitOffset: Offset in Bit innerhalb einer Businstanz.                                    -->
+   <!-- bitLength: Groesse des zu verarbeitenden Datenblocks in Bit.                            -->
+   
+      <!-- fastPeriod Operations  ============================================================= -->
+      <ProcessSafetySignals type="fastPeriod" activated="on">
+         <Input driver="VIODriver" bus="VIO-SAF-SIG" bitOffset="128" bitLength="256"/>
+         <Output driver="VIODriver" bus="VIO-SAF-SIG" bitOffset="0" bitLength="128"/>
+         <!-- Einschraenkungen fuer die Betriebsartenauswahl ++++++++++++++++++++++++++++++++++ -->
+         <!-- on:  Betriebsart ist ueber den Betriebsartenwahlschalter auswaehlbar.             -->
+         <!-- off: Betriebsart ist ueber den Betriebsartenwahlschalter nicht auswaehlbar.       -->
+         <OpModes T2="off" AUT="on" EXT="off"/>
+      </ProcessSafetySignals>
+
+      <CheckPower type="fastPeriod" activated="on">
+         <Input driver="ECatIODriver" bus="ECAT-CTRLBUS" bitOffset="208" bitLength="8"/>
+      </CheckPower>
+
+      <PowerDownByPLC type="fastPeriod">
+         <Input bitLength="8"/>
+         <Output bitLength="8"/>
+      </PowerDownByPLC>
+
+      <UserInterface type="fastPeriod">
+         <Input driver="VIODriver" bus="VIO-SAF-SIG" bitOffset="128" bitLength="256"/>
+         <Output bitLength="72"/>
+      </UserInterface>
+
+      <TasInterface type="fastPeriod" activated="off">
+         <Input driver="VIODriver" bus="VIO-USER-BUS" bitOffset="24" bitLength="16"/>
+         <Output driver="VIODriver" bus="VIO-USER-BUS" bitOffset="0" bitLength="24"/>
+      </TasInterface>
+
+      <VirtualKCP type="fastPeriod" activated="on">
+         <Input driver="Kcp3Driver" bus="KCP3" bitOffset="0" bitLength="112"/>
+      </VirtualKCP>
+
+      <PositionCheck type="fastPeriod" activated="on">
+         <Input driver="VIODriver" bus="VIO-POSITION" bitOffset="128" bitLength="960"/>
+         <Output driver="VIODriver" bus="VIO-POSITION" bitOffset="0" bitLength="128"/>
+         <!-- Ueberwachung auf unzulaessige Positionsabweichungen zwischen Bewegungssteuerung   -->
+         <!-- und Sicherheitssteuerung, kartesisch und achsspezifisch.                          -->
+         <!-- maxPosDiffMm: Maximal zulaessige Abweichung in mm bei stehenden Achsen. Gilt fuer -->
+         <!--               die kartesische Roboterposition und lineare Achsen. [1..10000]      -->
+         <!-- maxPosDiffDeg: Maximal zulaessige Abweichung in Grad bei stehenden Achsen. Gilt   -->
+         <!--                fuer alle rotatorischen Achsen (auch Roboter). [0.0..180.0]        -->
+         <!-- timeDiff: Groesster zu erwartender Zeitunterschied in ms zwischen den Positions-  -->
+         <!--           daten der Bewegungssteuerung und der Sicherheitssteuerung. [0..120]     -->
+         <PosCompare maxPosDiffMm="20" maxPosDiffDeg="0.5" timeDiff="24"/>
+      </PositionCheck>
+
+      <!-- slowPeriod Operations  ============================================================= -->
+      <ControlOuterFan type="slowPeriod" activated="on">
+         <Input driver="ECatIODriver" bus="ECAT-CTRLBUS" bitOffset="208" bitLength="8"/>
+         <!-- Ueberwachung und Steuerung des Schrankaussenluefters ++++++++++++++++++++++++++++ -->
+         <!-- nominalRevolution: Nenndrehzahl der Luefter, entspricht 100%.                     -->
+         <!-- lowestSpeedPercent: Minimaldrehzahl der Luefter in Prozent                        -->
+         <!-- monitoringPerMin: Ueberwachungsintervall in Anzahl der Ueberwachungen pro Minute  -->
+         <!-- slowdownPercentPerMin: Gradient der Drehzahlreduzierung in Prozent pro Minute     -->
+         <OuterFan nominalRevolution="2900" lowestSpeedPercent="10"
+                   monitoringPerMin="5" slowdownPercentPerMin="1"/>
+         <!-- Ueberwachung des Temperatursensors oberhalb des Ballastwiderstands ++++++++++++++ -->
+         <!-- monitoring: Zum Ein- bzw. Ausschalten der Ueberwachung. Werte: on, off            -->
+         <!-- startFanTemp: Temperatur in Grad Celsius bei 10% Aussenluefterdrehzahl.           -->
+         <!-- maxFanTemp: Temperatur in Grad Celsius bei 100% Aussenluefterdrehzahl.            -->
+         <!-- warnTemp: Warngrenze der Temperatur in Grad Celsius.                              -->
+         <!-- alarmTemp: Alarmgrenze der Temperatur in Grad Celsius.                            -->
+         <UpperTempSensor monitoring="on" startFanTemp="55" maxFanTemp="60"
+                                          warnTemp="70" alarmTemp="80"/>
+         <!-- Ueberwachung des Temperatursensors auf dem CIB ++++++++++++++++++++++++++++++++++ -->
+         <!-- monitoring: Zum Ein- bzw. Ausschalten der Ueberwachung. Werte: on, off            -->
+         <!-- startFanTemp: Temperatur in Grad Celsius bei 10% Aussenluefterdrehzahl.           -->
+         <!-- maxFanTemp: Temperatur in Grad Celsius bei 100% Aussenluefterdrehzahl.            -->
+         <!-- warnTemp: Warngrenze der Temperatur in Grad Celsius.                              -->
+         <CIB_TempSensor monitoring="on" startFanTemp="45" maxFanTemp="50" warnTemp="55"/>
+         <!-- Ueberwachung der Drehzahl des Schrankinnenluefters ++++++++++++++++++++++++++++++ -->
+         <!-- monitoring: Zum Ein- bzw. Ausschalten der Ueberwachung. Werte: on, off            -->
+         <!-- warnRevolution: Warngrenze der Luefterdrehzahl in U/min.                          -->
+         <!-- alarmRevolution: Alarmgrenze der Luefterdrehzahl in U/min.                        -->
+         <InnerFan monitoring="on" warnRevolution="5000" alarmRevolution="3000"/>
+         <!-- Ueberwachung der Drehzahl des PC-Luefters +++++++++++++++++++++++++++++++++++++++ -->
+         <!-- monitoring: Zum Ein- bzw. Ausschalten der Ueberwachung. Werte: on, off            -->
+         <!-- warnRevolution: Warngrenze der Luefterdrehzahl in U/min.                          -->
+         <!-- alarmRevolution: Alarmgrenze der Luefterdrehzahl in U/min.                        -->
+         <PcFan monitoring="on" warnRevolution="5000" alarmRevolution="3000"/>
+         <!-- Ueberwachung des Temperatursignals vom Transformator ++++++++++++++++++++++++++++ -->
+         <!-- monitoring: Zum Ein- bzw. Ausschalten der Ueberwachung. Werte: on, off            -->
+         <!-- TrafoTemp konfigurierbar in Config\User\CabCtrl.xml                               -->
+         <!-- Ueberwachung des Stoerungssignals vom Klimageraet +++++++++++++++++++++++++++++++ -->
+         <!-- monitoring: Zum Ein- bzw. Ausschalten der Ueberwachung. Werte: on, off            -->
+         <!-- ClimateDevice konfigurierbar in Config\User\CabCtrl.xml                           -->
+      </ControlOuterFan>
+
+      <MonitoringSR type="slowPeriod" activated="on">
+         <!-- Ueberwachung der OK-Signale des Netzteils in der Steuerbox ++++++++++++++++++++++ -->
+         <!-- monitoring: Zum Ein- bzw. Ausschalten der Ueberwachung. Werte: on, off            -->
+         <!-- Der Input muss hier davor stehen, weil das Einlesen keinen Unterknoten zulaesst.  -->
+         <Input driver="ECatIODriver" bus="ECAT-CTRLBUS" bitOffset="224" bitLength="8"/>
+         <PowerSupplyOK monitoring="on"/>
+         <!-- Ueberwachung und Steuerung der Luefter in den Antriebsboxen +++++++++++++++++++++ -->
+         <!-- monitoring: Zum Ein- bzw. Ausschalten der Ueberwachung. Werte: on, off            -->
+         <!-- nominalRevolution: Nenndrehzahl der Luefter, entspricht 100% [0..20000]           -->
+         <!-- lowestSpeedPercent: Minimaldrehzahl der Luefter (SmallSize) in Prozent [10..100]  -->
+         <!-- lowestSpeedPercentSR: Minimaldrehzahl der Luefter (Compact) in Prozent [10..100]  -->
+         <!-- warnDeviationPercent: Neg. Dehzahlabweichung in Prozent fuer Warnmeldung [0..100] -->
+         <!-- slowdownPercentPerMin: Gradient der Drehzahlreduzierung in %/min [1..1000]        -->
+         <FansDriveBox monitoring="on" nominalRevolution="3600" warnDeviationPercent="20"
+                      lowestSpeedPercent="10" lowestSpeedPercentSR="18" slowdownPercentPerMin="1"/>
+         <!-- Ueberwachung der Drehzahl des Schrankaussenluefters beim SmallSize ++++++++++++++ -->
+         <!-- monitoring: Zum Ein- bzw. Ausschalten der Ueberwachung. Werte: on, off            -->
+         <!-- warnRevolution: Warngrenze der Luefterdrehzahl in U/min [0..20000]                -->
+         <!-- alarmRevolution: Alarmgrenze der Luefterdrehzahl in U/min [0..20000]              -->
+         <OuterFanSmallSize monitoring="on" warnRevolution="2600" alarmRevolution="2000"/>
+         <!-- Ueberwachung des CPU-Luefters beim SR bzw. des PC-Luefters beim SmallSize +++++++ -->
+         <!-- monitoring: Zum Ein- bzw. Ausschalten der Ueberwachung. Werte: on, off            -->
+         <FanCpu monitoring="on"/>
+         <!-- Ueberwachung der Drehzahl des Netzteil-Luefters +++++++++++++++++++++++++++++++++ -->
+         <!-- monitoring: Zum Ein- bzw. Ausschalten der Ueberwachung. Werte: on, off            -->
+         <!-- warnRevolution: Warngrenze der Luefterdrehzahl in U/min [0..20000]                -->
+         <!-- alarmRevolution: Alarmgrenze der Luefterdrehzahl in U/min [0..20000]              -->
+         <FanPowerSupply monitoring="on" warnRevolution="1400" alarmRevolution="1000"/>
+         <!-- Ueberwachung des Temperatursensors auf dem CIB-SR +++++++++++++++++++++++++++++++ -->
+         <!-- monitoring: Zum Ein- bzw. Ausschalten der Ueberwachung. Werte: on, off            -->
+         <!-- warnTemp: Uebertemperatur Warngrenze in Grad Celsius [30..90]                     -->
+         <CIBSR_TempSensor monitoring="on" warnTemp="55"/>
+      </MonitoringSR>
+
+      <SmallSize400 type="slowPeriod" activated="on">
+         <!-- Ueberwachung und Steuerung der Drehzahl des Schrankaussenluefters +++++++++++++++ -->
+         <!-- mittels Auswertung der Temperaturen der Versorger- und Antriebsmodule             -->
+         <!-- monitoring: Zum Ein- bzw. Ausschalten der Ueberwachung. Werte: on, off            -->
+         <!-- nominalRevolution: Nenndrehzahl der Luefter, entspricht 100% [0..20000]           -->
+         <!-- lowestSpeedPercent: Minimaldrehzahl der Luefter in Prozent [10..100]              -->
+         <!-- pulse: Tachoausgang des Luefters. Impulse pro Umdrehung                           -->
+         <!-- warnDeviationPercent: Neg. Dehzahlabweichung in Prozent fuer Warnmeldung [0..100] -->
+         <!-- slowdownPercentPerMin: Gradient der Drehzahlreduzierung in %/min [1..1000]        -->
+         <OuterFan monitoring="on" nominalRevolution="2900" lowestSpeedPercent="10" pulse="3"
+                                   warnDeviationPercent="20" slowdownPercentPerMin="1"/>
+         <!-- Ueberwachung des PC-Luefters ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+         <!-- monitoring: Zum Ein- bzw. Ausschalten der Ueberwachung. Werte: on, off            -->
+         <PcFan monitoring="on"/>
+         <!-- Ueberwachung des Temperatursensors auf dem CIB-SR +++++++++++++++++++++++++++++++ -->
+         <!-- monitoring: Zum Ein- bzw. Ausschalten der Ueberwachung. Werte: on, off            -->
+         <!-- startFanTemp: Temperatur in Grad Celsius bei 10% Aussenluefterdrehzahl.           -->
+         <!-- maxFanTemp: Temperatur in Grad Celsius bei 100% Aussenluefterdrehzahl.            -->
+         <!-- warnTemp: Warngrenze der Temperatur in Grad Celsius.                              -->
+         <CIBSR_TempSensor monitoring="on" startFanTemp="45" maxFanTemp="50" warnTemp="55"/>
+      </SmallSize400>
+
+      <SafetyDiag type="slowPeriod" activated="off">
+         <Input driver="VIODriver" bus="VIO-SAF-DIAG" bitOffset="32" bitLength="80"/>
+      </SafetyDiag>
+
+      <Retrofit type="slowPeriod">
+         <Input bitLength="8"/>
+      </Retrofit>
+
+      <ProfiEnergy type="slowPeriod" activated="on"/>
+         <!-- Diese Funktion belegt keine IO-Daten auf einem Bus. -->
+
+   </Operations>
+</CabCtrl>

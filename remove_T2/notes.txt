@@ -1,0 +1,3 @@
+Execute copy_cabcrl.bat at Smartpad
+if it does not work a backup is on: C:\KRC\ROBOTER\Config\System\Common\CabCtrl_backup.xml
+  the original file is C:\KRC\ROBOTER\Config\System\Common\CabCtrl.xml
