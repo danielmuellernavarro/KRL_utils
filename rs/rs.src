@@ -1,0 +1,15 @@
+&ACCESS RVO
+&REL 74
+DEF rs(st :OUT)
+DECL ST_RS st
+
+st.Q1 = NOT st.RESET1 AND (st.Q1 OR st.SET)
+
+END
+
+GLOBAL DEF sr(st :OUT)
+DECL ST_SR st
+
+st.Q1 = (NOT st.RESET AND st.Q1) OR st.SET1
+
+END
