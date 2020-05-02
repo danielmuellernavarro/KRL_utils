@@ -1,0 +1,29 @@
+&ACCESS  RV
+&PARAM DISKPATH = Program/DEF
+&REL 13
+DEFFCT E6POS pos_add_frame(e6p1 :IN, f1 :IN, f2 :IN, f3 :IN)
+E6POS e6p1
+FRAME f1, f2, f3
+
+IF Varstate("f3") <> #initialized THEN
+  f3 = E6POS_NULL
+ENDIF
+IF Varstate("f4") <> #initialized THEN
+  f4 = E6POS_NULL
+ENDIF
+
+f1 = INIT_FRAME(f1)
+f2 = INIT_FRAME(f2)
+f3 = INIT_FRAME(f3)
+e6p1 = INIT_E6POS(e6p1)
+
+e6p1.X = f1.X + f2.X + f3.X + e6p1.X
+e6p1.Y = f1.Y + f2.Y + f3.Y + e6p1.Y
+e6p1.Z = f1.Z + f2.Z + f3.Z + e6p1.Z
+e6p1.A = f1.A + f2.A + f3.A + e6p1.A
+e6p1.B = f1.B + f2.B + f3.B + e6p1.B
+e6p1.C = f1.C + f2.C + f3.C + e6p1.C
+
+RETURN e6p1
+
+ENDFCT

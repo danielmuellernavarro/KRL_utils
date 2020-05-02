@@ -1,0 +1,60 @@
+&ACCESS RVO1
+&COMMENT Just a SRC file with no content
+DEFFCT BOOL cmp_seq (s1 :IN, s2 :IN)
+DECL SEQUENZ_S s1, s2
+
+IF Varstate("s1.STATION") <> #initialized THEN
+  s1.STATION = #KEINE
+ENDIF
+IF Varstate("s2.STATION") <> #initialized THEN
+  s2.STATION = #KEINE
+ENDIF
+
+IF Varstate("s1.AKTION") <> #initialized THEN
+  s1.AKTION = #KEINE
+ENDIF
+IF Varstate("s2.AKTION") <> #initialized THEN
+  s2.AKTION = #KEINE
+ENDIF
+
+IF Varstate("s1.GREIFER") <> #initialized THEN
+  s1.GREIFER = 0
+ENDIF
+IF Varstate("s2.GREIFER") <> #initialized THEN
+  s2.GREIFER = 0
+ENDIF
+
+IF Varstate("s1.POSITION") <> #initialized THEN
+  s1.POSITION = 0
+ENDIF
+IF Varstate("s2.POSITION") <> #initialized THEN
+  s2.POSITION = 0
+ENDIF
+
+IF Varstate("s1.NUMMER") <> #initialized THEN
+  s1.NUMMER = 0
+ENDIF
+IF Varstate("s2.NUMMER") <> #initialized THEN
+  s2.NUMMER = 0
+ENDIF
+
+
+IF (s1.STATION <> #KEINE) AND (s2.STATION <> #KEINE) AND (s1.STATION <> s2.STATION) THEN
+  RETURN FALSE
+ENDIF
+IF (s1.AKTION <> #KEINE) AND (s2.AKTION <> #KEINE) AND (s1.AKTION <> s2.AKTION) THEN
+  RETURN FALSE
+ENDIF
+IF (s1.GREIFER <> 0) AND (s2.GREIFER <> 0) AND (s1.GREIFER <> s2.GREIFER) THEN
+  RETURN FALSE
+ENDIF
+IF (s1.POSITION <> 0) AND (s2.POSITION <> 0) AND (s1.POSITION <> s2.POSITION) THEN
+  RETURN FALSE
+ENDIF
+IF (s1.NUMMER <> 0) AND (s2.NUMMER <> 0) AND (s1.NUMMER <> s2.NUMMER) THEN
+  RETURN FALSE
+ENDIF
+
+RETURN TRUE
+
+ENDFCT

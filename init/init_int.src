@@ -1,0 +1,15 @@
+&ACCESS RVO1
+&COMMENT
+DEFFCT INT init_int (i :IN, iDefault :IN)
+INT i, iDefault
+
+IF Varstate("i") <> #initialized THEN
+  IF Varstate("iDefault") <> #initialized THEN
+    RETURN 0
+  ENDIF
+  RETURN iDefault
+ENDIF
+
+RETURN i
+
+ENDFCT

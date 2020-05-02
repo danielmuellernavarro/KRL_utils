@@ -1,0 +1,15 @@
+&ACCESS RVO1
+&COMMENT
+DEFFCT REAL init_real(r :IN, rDefault :IN)
+INT r, rDefault
+
+IF Varstate("r") <> #initialized THEN
+  IF Varstate("rDefault") <> #initialized THEN
+    RETURN 0.0
+  ENDIF
+  RETURN rDefault
+ENDIF
+
+RETURN r
+
+ENDFCT

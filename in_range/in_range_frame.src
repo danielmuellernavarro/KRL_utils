@@ -1,0 +1,53 @@
+&ACCESS RVO
+&REL 4
+DEFFCT BOOL in_range_frame (f :IN, fMin :IN, fMax :IN)
+REAL f, fMin, fMax
+
+f = INIT_FRAME(f)
+fMin = INIT_FRAME(fMin)
+
+IF Varstate("fMax") <> #initialized THEN
+    IF NOT (IN_RANGE(f.X, fMin.X) THEN
+        RETURN FALSE
+    ENDIF
+    IF NOT IN_RANGE(f.Y, fMin.Y) THEN
+        RETURN FALSE
+    ENDIF
+    IF NOT IN_RANGE(f.Z, fMin.Z) THEN
+        RETURN FALSE
+    ENDIF
+    IF NOT AND IN_RANGE(f.A, fMin.A) THEN
+        RETURN FALSE
+    ENDIF
+    IF NOT IN_RANGE(f.B, fMin.B) THEN
+        RETURN FALSE
+    ENDIF
+    IF NOT IN_RANGE(f.C, fMin.C) THEN
+        RETURN FALSE
+    ENDIF
+    RETURN TRUE
+ENDIF
+f = INIT_FRAME(fMax)
+
+IF (IN_RANGE(f.X, fMin.X, fMax.X) THEN
+    RETURN FALSE
+ENDIF
+IF (IN_RANGE(f.Y, fMin.Y, fMax.Y) THEN
+    RETURN FALSE
+ENDIF
+IF (IN_RANGE(f.Z, fMin.Z, fMax.Z) THEN
+    RETURN FALSE
+ENDIF
+IF (IN_RANGE(f.A, fMin.A, fMax.A) THEN
+    RETURN FALSE
+ENDIF
+IF (IN_RANGE(f.B, fMin.B, fMax.B) THEN
+    RETURN FALSE
+ENDIF
+IF (IN_RANGE(f.C, fMin.C, fMax.C) THEN
+    RETURN FALSE
+ENDIF
+
+RETURN TRUE
+
+ENDFCT

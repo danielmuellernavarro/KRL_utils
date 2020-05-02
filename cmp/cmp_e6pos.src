@@ -1,0 +1,8 @@
+&ACCESS RVO1
+&COMMENT Just a SRC file with no content
+DEFFCT BOOL cmp_e6pos (e1 :IN, e2 :IN)
+DECL E6POS e1, e2
+
+RETURN ((e1.X == e2.X) AND (e1.Y == e2.Y) AND (e1.Z == e2.Z) AND (e1.A == e2.A) AND (e1.B == e2.B) AND (e1.C == e2.C) AND (e1.S <> e2.S) OR (e1.T <> e2.T))
+
+ENDFCT

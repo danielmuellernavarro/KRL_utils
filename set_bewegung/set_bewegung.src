@@ -1,0 +1,54 @@
+&ACCESS R
+&REL 6
+&PARAM DISKPATH = Program/DEF
+DEF set_bewegung (iBase :IN, iTool :IN, eBew :IN, rGesch :IN, rBesch :IN, rAprox :IN)
+INT iBase, iTool
+DECL E_BEWEGUNG_TYPE eBew
+REAL rGesch, rBesch, rAprox ; Geschwindigkeit, Beschleunigung, Approximation
+REAL rGeschInit
+
+$BWDSTART=FALSE ; Interne Variable fuer PTP_PARAMS Bewegungen
+
+BAS(#BASE,iBase)
+BAS(#TOOL,iTool)
+
+SWITCH eBew
+CASE #TYPE_PTP
+  rGeschInit = 100.0
+CASE #TYPE_LIN, #TYPE_CIRC
+  rGeschInit = 2.0
+DEFAULT
+  ;MsgLoop("Unbekannte Bewegung")
+ENDSWITCH
+
+
+rGesch = INIT_REAL(rGesch, rGeschInit)
+rBesch = INIT_REAL(rBesch, 100.0)
+rAprox = INIT_REAL(rAprox, 100.0)
+
+;FDAT_ACT={TOOL_NO 1,BASE_NO 1,IPO_FRAME #BASE,POINT2[] " ",TQ_STATE FALSE}
+
+SWITCH eBew
+CASE #TYPE_PTP
+  ;PDAT_ACT={VEL 100.000,ACC 100.0000,APO_DIST 100.000,APO_MODE #CDIS, GEAR_JERK 50.0}
+  ;GEAR_JERK koennte nicht deklariert werden
+  PDAT_ACT={VEL 100.000,ACC 100.0000,APO_DIST 100.000,APO_MODE #CDIS}
+  PDAT_ACT.VEL = rGesch
+  PDAT_ACT.ACC = rBesch
+  PDAT_ACT.APO_DIST = rAprox
+  BAS(#PTP_PARAMS, rGesch)
+
+CASE #TYPE_LIN, #TYPE_CIRC
+  ;LDAT_ACT = {VEL 2.00000,ACC 100.000,APO_DIST 100.000,APO_FAC 50.0000,AXIS_VEL 100.000,AXIS_ACC 100.000,ORI_TYP #VAR,CIRC_TYP #BASE,JERK_FAC 50.0000,GEAR_JERK 50.0000,EXAX_IGN 0}
+  ;GEAR_JERK und EXAX_IGN koennten nicht deklariert werden
+  LDAT_ACT = {VEL 2.00000,ACC 100.000,APO_DIST 100.000,APO_FAC 50.0000,AXIS_VEL 100.000,AXIS_ACC 100.000,ORI_TYP #VAR,CIRC_TYP #BASE}
+  LDAT_ACT.VEL = rGesch
+  LDAT_ACT.ACC = rBesch
+  LDAT_ACT.APO_DIST = rAprox
+  BAS(#CP_PARAMS, rGesch)
+
+DEFAULT
+  ;MsgLoop("Unbekannte Bewegung")
+ENDSWITCH
+
+END

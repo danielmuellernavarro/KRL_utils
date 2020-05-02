@@ -1,0 +1,30 @@
+&ACCESS RVO1
+&COMMENT
+DEFFCT E6POS init_e6pos (e6p :IN, e6pDefault :IN)
+E6POS e6p, e6pDefault
+
+IF Varstate("e6pDefault") <> #initialized THEN
+  e6pDefault = E6POS_NULL
+ENDIF
+IF Varstate("e6p.X") <> #initialized THEN
+  e6p.X = e6pDefault.X
+ENDIF
+IF Varstate("e6p.Y") <> #initialized THEN
+  e6p.Y = e6pDefault.Y
+ENDIF
+IF Varstate("e6p.Z") <> #initialized THEN
+  e6p.Z = e6pDefault.Z
+ENDIF
+IF Varstate("e6p.A") <> #initialized THEN
+  e6p.A = e6pDefault.A
+ENDIF
+IF Varstate("e6p.B") <> #initialized THEN
+  e6p.B = e6pDefault.B
+ENDIF
+IF Varstate("e6p.C") <> #initialized THEN
+  e6p.C = e6pDefault.C
+ENDIF
+
+RETURN e6p
+
+ENDFCT

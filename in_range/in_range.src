@@ -1,0 +1,12 @@
+&ACCESS RVO
+&REL 4
+DEFFCT BOOL in_range (r :IN, rMin :IN, rMax :IN)
+REAL r, rMin, rMax
+
+IF Varstate("rMax") <> #initialized THEN
+    RETURN (ABS(r) < rMin)
+ENDIF
+
+RETURN ((r <= rMin) OR (r >= rMax))
+
+ENDFCT

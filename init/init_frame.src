@@ -1,0 +1,30 @@
+&ACCESS RVO1
+&COMMENT
+DEFFCT FRAME init_frame (f :IN, fDefault :IN)
+FRAME f, fDefault
+
+IF Varstate("fDefault") <> #initialized THEN
+  fDefault = $NULLFRAME
+ENDIF
+IF Varstate("f.X") <> #initialized THEN
+  f.X = fDefault.X
+ENDIF
+IF Varstate("f.Y") <> #initialized THEN
+  f.Y = fDefault.Y
+ENDIF
+IF Varstate("f.Z") <> #initialized THEN
+  f.Z = fDefault.Z
+ENDIF
+IF Varstate("f.A") <> #initialized THEN
+  f.A = fDefault.A
+ENDIF
+IF Varstate("f.B") <> #initialized THEN
+  f.B = fDefault.B
+ENDIF
+IF Varstate("f.C") <> #initialized THEN
+  f.C = fDefault.C
+ENDIF
+
+RETURN f
+
+ENDFCT

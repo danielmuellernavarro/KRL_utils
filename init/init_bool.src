@@ -1,0 +1,15 @@
+&ACCESS RVO1
+&COMMENT
+DEFFCT BOOL init_bool (x :IN, xDefault :IN)
+BOOL x, xDefault
+
+IF Varstate("x") <> #initialized THEN
+  IF Varstate("xDefault") <> #initialized THEN
+    RETURN FALSE
+  ENDIF
+  RETURN xDefault
+ENDIF
+
+RETURN x
+
+ENDFCT

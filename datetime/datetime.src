@@ -1,0 +1,12 @@
+&ACCESS  RV
+&PARAM DISKPATH = Program/DEF
+&REL 13
+DEF DATETIME(iDate :OUT, iTime :OUT)
+INT iDate, iTime
+DECL DATE stDatetime
+
+stDatetime = $DATE
+iDate = stDateTime.YEAR*10000 + stDateTime.MONTH*100 + stDateTime.DAY
+iTime = stDateTime.HOUR*10000 + stDateTime.MIN*100 + stDateTime.SEC
+
+END

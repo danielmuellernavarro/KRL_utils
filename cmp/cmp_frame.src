@@ -1,0 +1,8 @@
+&ACCESS RVO1
+&COMMENT Just a SRC file with no content
+DEFFCT BOOL cmp_frame (f1 :IN, f2 :IN)
+FRAME f1, f2
+
+RETURN ((f1.X == f2.X) AND (f1.Y == f2.Y) AND (f1.Z == f2.Z) AND (f1.A == f2.A) AND (f1.B == f2.B) AND (f1.C == f2.C))
+
+ENDFCT

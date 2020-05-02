@@ -1,0 +1,20 @@
+&ACCESS RV
+&REL 15
+&PARAM DISKPATH = Program/DEF
+DEFFCT E6POS pos_sub_frame (e6p1 :IN, f1 :IN )
+E6POS e6p1
+FRAME f1
+
+f1 = INIT_FRAME(f1, $NULLFRAME)
+e6p1 = INIT_E6POS(e6p1, E6POS_NULL)
+
+e6p1.X = e6p1.X - f1.X
+e6p1.Y = e6p1.Y - f1.Y
+e6p1.Z = e6p1.Z - f1.Z
+e6p1.A = e6p1.A - f1.A
+e6p1.B = e6p1.B - f1.B
+e6p1.C = e6p1.C - f1.C
+
+RETURN e6p1
+
+ENDFCT

@@ -1,0 +1,27 @@
+&ACCESS R
+&REL 2
+DEFFCT FRAME pos_add_pos (e1 :IN, e2 :IN, e3 :IN, e4 :IN)
+FRAME e1, e2, e3, e4
+
+IF Varstate("e3") <> #initialized THEN
+  e3 = NULLE
+ENDIF
+IF Varstate("e4") <> #initialized THEN
+  e4 = $NULLFRAME
+ENDIF
+
+e1 = INIT_FRAME(e1, $NULLFRAME)
+e2 = INIT_FRAME(e2, $NULLFRAME)
+e3 = INIT_FRAME(e3, $NULLFRAME)
+e4 = INIT_FRAME(e4, $NULLFRAME)
+
+e1.X = e1.X + e2.X + e3.X + e4.X
+e1.Y = e1.Y + e2.Y + e3.Y + e4.Y
+e1.Z = e1.Z + e2.Z + e3.Z + e4.Z
+e1.A = e1.A + e2.A + e3.A + e4.A
+e1.B = e1.B + e2.B + e3.B + e4.B
+e1.C = e1.C + e2.C + e3.C + e4.C
+
+RETURN e1
+
+ENDFCT

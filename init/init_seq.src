@@ -1,0 +1,27 @@
+&ACCESS RVO1
+&COMMENT
+DEFFCT SEQUENZ_S init_seq (s :IN)
+DECL SEQUENZ_S s
+
+IF Varstate("s.STATION") <> #initialized THEN
+  s.STATION = #KEINE
+ENDIF
+IF Varstate("s.AKTION") <> #initialized THEN
+  s.AKTION = #KEINE
+ENDIF
+IF Varstate("s.GREIFER") <> #initialized THEN
+  s.GREIFER = 0
+ENDIF
+IF Varstate("s.POSITION") <> #initialized THEN
+  s.POSITION = 0
+ENDIF
+IF Varstate("s.NUMMER") <> #initialized THEN
+  s.NUMMER = 0
+ENDIF
+
+RETURN s
+
+ENDFCT
+
+
+
