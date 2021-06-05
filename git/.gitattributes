@@ -1,0 +1,3 @@
+*.src filter=krl
+*.dat filter=krl
+*.sub filter=krl
